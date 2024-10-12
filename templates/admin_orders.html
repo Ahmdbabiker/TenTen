@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Changa:wght@200..800&display=swap" rel="stylesheet">
+    <title>Document</title>
+</head>
+<body dir="rtl">
+
+
+    <!--navbar start-->
+
+
+    <nav class="navbar">
+        <div class="logo">
+            <img src="{% static 'images/tenten.png'%}" height="80px" width="80px">
+        </div>
+        <div class="tit">
+            <small>دومـاً, عشرة على 10</small>
+        </div>
+        <div class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+        <ul class="nav-list">
+            <li><a href="#">الرئيسية</a></li>
+            <li><a href="#">المفضلة</a></li>
+            <li><a href="#">طلباتي</a></li>
+            <li><a href="{% url 'cart_summary' %}">
+                السلة (<span id="cart_quantity"> {{cart|length}}</span>)
+            </a></li>
+            <li class="uniqe"><a href="">دخول</a></li>
+        </ul>
+    </nav>
+    <!--navbar ending-->
+    
+
+    <audio id="notification-sound" src="{% static 'note.wav' %}" preload="auto"></audio>
+
+
+
+
+    <div class="table-container">
+        {% if order_no == 1 %}
+        <h2>جميع الطلبـات</h2>
+    {% elif order_no == 2 %}
+    <h1>الطلبات المباشرة </h1>
+    <button id="enable-notifications aus"> تفعيل الإشعارات</button>
+<button id="disable-notifications aus"> قفل الإشعارات </button>
+    <ul id="order-list">
+        {% for order in orders %}
+        <li><a href="{% url 'order_detail' order.id %}">Order ID: {{ order.id }}</a></li>
+        {% endfor %}
+    </ul>
+
+    {% elif order_no == 3 %}
+        <h2>طلبـات اليـوم</h2>
+    {% elif order_no == 4 %}
+    <h2>طلبات السيارة</h2>
+    {% elif order_no == 5 %}
+    <h2>طلبات البيت</h2>
+    {% elif order_no == 6 %}
+    <h2>آخر 7 أيام</h2>
+    {% elif order_no == 7 %}
+    <h2>آخر 30 يوماً</h2>
+
+
+    
+    {% endif %}
+
+
+
+  
+
+    {% if order_no == 2 %}
+        <table style="display: none;">
+    {% else %}
+        <table>
+            <thead>
+                <tr>
+                    <th>رقم الطلب</th>
+                    <th>إسم المستخدم</th>
+                    <th>رقم الهاتف</th>
+                    <th> العنوان</th>
+                    <th>الأصناف المطلوبة</th>
+                    <th>تاريخ الطلب</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if orders %}
+                {% for order in orders %}
+                <tr>
+                    <td>{{order.id}}</td>
+                    <td>
+                        {% if order.user%}
+                        {{order.user.username}}
+                        {% else %}
+                        <p>مستخدم غير مسجل</p>
+                        {%endif%}
+                    </td>
+                    <td>{{order.phone_number}}</td>
+                    <td>{{order.shipping_address|linebreaks}} </td>
+                    <td>
+                        {% for product in order.order_items %}
+                        {{product.product.name}} | 
+                        {% endfor %}
+                    </td>
+                 
+                    <td>{{order.date_ordered}}</td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <h2>لا بيانات لعرضها</h2>
+                {% endif%}
+            </tbody>
+        </table>
+    </div>
+
+    {% endif %}
+
+    <div class="pagination">
+        <span class="step-links">
+            {% if orders.has_previous %}
+                <a href="?page=1">&laquo; الأول</a>
+                <a href="?page={{ orders.previous_page_number }}">السابق</a>
+            {% endif %}
+    
+            <span class="current">
+                الصفحة {{ orders.number }} من {{ orders.paginator.num_pages }}.
+            </span>
+    
+            {% if orders.has_next %}
+                <a href="?page={{ orders.next_page_number }}">التالي</a>
+                <a href="?page={{ orders.paginator.num_pages }}">الأخير &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+
+
+
+
+    <!--footer -->
+
+         <!--footer start-->
+         <div class="footer">
+            <!--<div class="container">-->
+                <div class="taking-footer">
+                   
+                    <div class="taking-links">
+                        <a href="">سياسة الخصوصية</a>
+                        <a href="">تواصل معنـا </a>
+                        <a href="">الشروط والأحكام </a>
+                        <a href=""> الرئيـسية</a>
+                    </div>
+                    <div class="log">
+                      <img src="{% static 'images/tenten.png' %}" height="75px" width="75px"><br>
+                      <small>All Rights Reserved 2024<i class="fa-regular fa-copyright"></i></small>
+                      <br><small>Developed by Ahmd Babiker</small>
+                  </div>
+                </div>
+          
+        </div>
+    <!--footer end-->
+    <!--footer -->
+
+
+
+
+    
+
+    <!-- footer navbar-->
+    <div class="foooter-nav">
+        <div class="container">
+            <div class="links">
+                <div class="link-tab">
+                    <i class="fas fa-home"></i><br>
+                    <small>الرئيسية </small>
+                </div>
+                <div class="link-tab">
+                    <i class="fas fa-shopping-bag"></i><br>
+                    <small>طلباتي </small>
+                </div>
+                <div class="link-tab">
+                    <i class="fas fa-user"></i><br>
+                    <small>حسابي </small>
+                    
+                </div>
+                <div class="link-tab">
+                    <i class="fas fa-shopping-cart"></i><br>
+                    <small>سلة التسوق </small>
+                </div>
+               
+            </div>
+        </div>
+    </div>
+
+<!-- footer navbar-->
+
+
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    const audio = document.getElementById('notification-sound');
+    let notificationsEnabled = localStorage.getItem('notificationsEnabled') === 'true';
+    let soundEnabled = localStorage.getItem('soundEnabled') === 'true'; // New variable for sound state
+    let lastOrderCount = {{ orders|length|default:"0" }};
+    const orderDetailUrl = "{% url 'order_detail' 0 %}".slice(0, -2);
+    
+    // Track displayed order IDs
+    const displayedOrderIds = new Set();
+    
+    // Function to check for new orders
+    function checkForNewOrders() {
+        $.ajax({
+            url: '{% url "get_new_orders" %}',
+            method: 'GET',
+            success: function(data) {
+                const newOrderCount = data.orders.length;
+                if (newOrderCount > 0 && notificationsEnabled && newOrderCount > lastOrderCount) {
+                    if (soundEnabled) { // Check if sound is enabled
+                        audio.currentTime = 0;
+                        audio.play().catch(error => {
+                            console.error('Audio playback failed:', error);
+                        });
+                    }
+    
+                    // Display new orders as links
+                    data.orders.forEach(order => {
+                        if (!displayedOrderIds.has(order.id)) {
+                            $('#order-list').prepend(`<li><a href="${orderDetailUrl}${order.id}/">Order ID: ${order.id}</a></li>`);
+                            displayedOrderIds.add(order.id); // Add to the Set
+                        }
+                    });
+                }
+                lastOrderCount = newOrderCount;
+            },
+            error: function(xhr, status, error) {
+                console.error('Error checking for new orders:', error);
+            }
+        });
+    }
+    
+    // Check for new orders every 5 seconds
+    setInterval(checkForNewOrders, 5000);
+    
+    // Function to update button states
+    function updateButtonStates() {
+        document.getElementById('enable-notifications').disabled = notificationsEnabled;
+        document.getElementById('disable-notifications').disabled = !notificationsEnabled;
+        document.getElementById('enable-sound').disabled = soundEnabled; // New button for sound
+        document.getElementById('disable-sound').disabled = !soundEnabled; // New button for sound
+    }
+    
+    // Function to enable notifications
+    document.getElementById('enable-notifications').addEventListener('click', function() {
+        notificationsEnabled = true;
+        localStorage.setItem('notificationsEnabled', 'true');
+        updateButtonStates();
+    });
+    
+    // Function to disable notifications
+    document.getElementById('disable-notifications').addEventListener('click', function() {
+        notificationsEnabled = false;
+        audio.pause();
+        audio.currentTime = 0;
+        localStorage.setItem('notificationsEnabled', 'false');
+        updateButtonStates();
+    });
+    
+    // Function to enable sound
+    document.getElementById('enable-sound').addEventListener('click', function() {
+        soundEnabled = true;
+        localStorage.setItem('soundEnabled', 'true');
+        updateButtonStates();
+    });
+    
+    // Function to disable sound
+    document.getElementById('disable-sound').addEventListener('click', function() {
+        soundEnabled = false;
+        audio.pause();
+        audio.currentTime = 0;
+        localStorage.setItem('soundEnabled', 'false');
+        updateButtonStates();
+    });
+    
+    // Set initial button states based on notifications and sound enabled
+    updateButtonStates();
+    </script>
+
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
